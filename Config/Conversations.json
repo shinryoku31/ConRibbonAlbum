@@ -1,0 +1,227 @@
+{
+  "start": {
+    "text": "Welcome, fellow ribbon collector! Want to talk about ribbons?",
+    "choices": [
+      { "label": "What is the Ribbon Game", "next": "about" },
+      { "label": "Show me the Ribbons", "next": "ribbons" },
+      { "label": "Are there any events around ribbons", "next": "events" },
+      { "label": "I want you to meet my friend!", "next": "share" }      
+    ]
+  },
+
+  "start_again": {
+    "text": "Sure, how can I help your ribbon collecting today?",
+    "choices": [
+      { "label": "What is the Ribbon Game", "next": "about" },
+      { "label": "Show me the Ribbons", "next": "ribbons" },
+      { "label": "Are there any events around ribbons", "next": "events" },
+      { "label": "I want you to meet my friend!", "next": "share" }    
+    ]
+  },
+
+  "about": {
+    "text": "The Ribbon Game is a scavenger hunt focused around building connections between congoers. There are many ways to obtain a ribbon—you just have to track down dealers who have them.",
+    "choices": [
+      { "label": "What are the main ways you can earn ribbons?", "next": "about_types" },
+      { "label": "How do I find ribbons?", "next": "about_find" },
+      { "label": "What if I want to give out ribbons?", "next": "about_suppliers" },
+      { "label": "Do I need my own ribbons to play?", "next": "about_need" },
+      { "label": "Where can I join the discussion boards?", "next": "about_discord" },
+      { "label": "Who has contributed to this collector album?", "next": "about_credits" },
+      { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
+    ]
+  },
+
+  "about_find": {
+    "text": "Look for ribbon dealers in the vendor areas, watch for announcements, and talk to other collectors—ribbons are meant to start conversations.",
+    "choices": [
+      { "label": "Tell me more about ribbons", "next": "about_types" },
+      { "label": "Back", "next": "about" }
+    ]
+  },
+
+  "about_types": {
+    "text": "There are usually 5 main ways players can earn ribbons:",
+    "choices": [
+      { "label": "Q&A", "next": "about_type_qa" },
+      { "label": "Achievement", "next": "about_type_achieve" },
+      { "label": "Connection", "next": "about_type_connect" },
+      { "label": "Action", "next": "about_type_action" },
+      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "Back", "next": "about" },
+      { "label": "More About Ribbons", "next": "about"}
+    ]
+  },
+
+  "about_type_qa": {
+    "text": "To get a Q&A ribbon, you must answer a question or quiz.",
+    "choices": [
+      { "label": "Achievement", "next": "about_type_achieve" },
+      { "label": "Connection", "next": "about_type_connect" },
+      { "label": "Action", "next": "about_type_action" },
+      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "Back", "next": "about_types" },
+      { "label": "More About Ribbons", "next": "about"}
+    ]
+  },
+
+  "about_type_achieve": {
+    "text": "To get an Achievement ribbon, you must complete a special task or quest.",
+    "choices": [
+      { "label": "Q&A", "next": "about_type_qa" },
+      { "label": "Connection", "next": "about_type_connect" },
+      { "label": "Action", "next": "about_type_action" },
+      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "Back", "next": "about_types" },
+      { "label": "More About Ribbons", "next": "about"}
+    ]
+  },
+
+  "about_type_connect": {
+    "text": "To get a Connection ribbon, you must meet people and strike up a conversation.",
+    "choices": [
+      { "label": "Q&A", "next": "about_type_qa" },
+      { "label": "Achievement", "next": "about_type_achieve" },
+      { "label": "Action", "next": "about_type_action" },
+      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "Back", "next": "about_types" },
+      { "label": "More About Ribbons", "next": "about"}
+    ]
+  },
+
+  "about_type_action": {
+    "text": "To get an Action ribbon, you need to play a game or perform an activity.",
+    "choices": [
+      { "label": "Q&A", "next": "about_type_qa" },
+      { "label": "Achievement", "next": "about_type_achieve" },
+      { "label": "Connection", "next": "about_type_connect" },
+      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "Back", "next": "about_types" },
+      { "label": "More About Ribbons", "next": "about"}
+    ]
+  },
+
+  "about_type_exclusive": {
+    "text": "To get an Exclusive ribbon, you must be at a certain time and place, wear a specific cosplay, or something similar.",
+    "choices": [
+      { "label": "Q&A", "next": "about_type_qa" },
+      { "label": "Achievement", "next": "about_type_achieve" },
+      { "label": "Connection", "next": "about_type_connect" },
+      { "label": "Action", "next": "about_type_action" },
+      { "label": "Back", "next": "about_types" },
+      { "label": "More About Ribbons", "next": "about"}
+    ]
+  },
+
+  "about_need": {
+    "text": "Of course not. Collecting is free for everyone to do.",
+    "choices": [
+      { "label": "Back", "next": "about" }
+    ]
+  },
+
+  "about_suppliers": {
+    "text": "If you would like to give out ribbons, please complete the Ribbon Update Form. Provide information like the ribbon name, how to earn it, and which days it will be available.",
+    "choices": [
+      { "label": "Show me the Ribbon Update Form", "action": "open_ribbon_form" },
+      { "label": "Back", "next": "about" }
+    ]
+  },
+
+  "about_discord": {
+    "text": "You can join our Discord server to discuss ribbons and convention topics.",
+    "choices": [
+      { "label": "Open the Discord server", "action": "open_discussion" },
+      { "label": "Back", "next": "about" }
+    ]
+  },
+
+  "about_credits": {
+    "text": "Sure—here are some contributors to the Ribbon Game Virtual Collector Album!",
+    "choices": [
+      { "label": "equinoxdoodles at Youmacon Virtual Collector's Album", "url": "https://docs.google.com/spreadsheets/d/1aPjje-rhUCYEZQv5YhesGeubb22otoTiTXURPArlWpI/edit#gid=1870883671" },
+      { "label": "AMKE 2025 Virtual Collector's Album", "url": "https://docs.google.com/spreadsheets/d/1Xe5TOfK0Xw7wJHjRLC-rFubmjfSrJ8tuRCPUfknB-n0/edit?gid=1870883671#gid=1870883671" },
+      { "label": "conRibbons NPC Conversation (this website)", "url": "https://github.com/shinryoku31/ConRibbons" },
+      { "label": "Back", "next": "about" }
+    ]
+  },
+
+  "ribbons": {
+    "text": "Yes! We have a wide range of ribbons today. How can I help you find your next ribbon?",
+    "choices": [
+      { "label": "Show me a dealers list", "next": "ribbons_dealers" },
+      { "label": "Show me a fandom list", "next": "ribbons_fandom" },
+      { "label": "Show me a list of all ribbons", "next": "ribbons_all" },
+      { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
+    ]
+  },
+
+  "ribbons_dealers": {
+    "text": "Sure, here are a list of dealers giving out ribbons.",
+    "view": "dealers",
+    "choices": [
+      { "label": "Back", "next": "ribbons" }
+    ]
+  },
+
+  "ribbons_fandom": {
+    "text": "Sure, here are a list of fandoms being offered right now.",
+    "view": "fandoms",
+    "choices": [
+      { "label": "Back", "next": "ribbons" }
+    ]
+  },
+
+  "ribbons_all": {
+    "text": "Sure, here is a list of all of the ribbons.",
+    "view": "all_ribbons",
+    "choices": [
+      { "label": "Back", "next": "ribbons" }
+    ]
+  },
+
+  "ribbon_detail": {
+    "text": "Ribbon details:",
+    "view": "ribbon_detail",
+    "choices": [
+      {
+        "label_template": "Ribbons from {{dealer}}",
+        "action": "detail_dealer"
+      },
+      {
+        "label_template": "Ribbons of {{fandom}} fandom",
+        "action": "detail_fandom"
+      },
+      {
+        "label": "Ribbon Menu",
+        "next": "ribbons"
+      }
+    ]
+  },
+
+  "events": {
+    "text": "Of course! There are Ribbon Game Meet-Ups. Below is a list of times and places. You can also hold an unofficial ribbon meetup in Discord using #ribbon-collectors.",
+    "choices": [
+      { "label": "<TBA - Placeholder> Saturday Afternoon", "next": "events_session1" },
+      { "label": "Show me the Discord Server", "next": "about_discord" },
+      { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
+    ]
+  },
+
+  "events_session1": {
+    "text": "<CAUTION, THIS IS A PLACEHOLDER ONLY> Ah yes, join me in Ballroom D on Saturday at 2PM.",
+    "choices": [
+      { "label": "Back to events", "next": "events" },
+      { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
+    ]
+  },
+
+  "share": {
+    "text": "Yes — here is a QR Code you can share with another collector.",
+    "picture_url": "./Config/ImageQR.png",
+    "choices": [
+      { "label": "Send a Link", "action": "share"},
+      { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
+    ]
+  }
+}

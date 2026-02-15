@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ConRibbons NPC</title>
+
+  <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root{
+      --bg: #0b1020;
+      --panel: rgba(0,0,0,0.55);
+      --border: rgba(255,255,255,0.18);
+      --text: #eef2ff;
+      --muted: rgba(238,242,255,0.78);
+      --radius: 18px;
+      --shadow: 0 16px 34px rgba(0,0,0,0.45);
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      min-height: 100vh;
+
+      /* NPC background image */
+      background:
+        linear-gradient(to bottom, rgba(11,16,32,0.45), rgba(11,16,32,0.75)),
+        url("./Config/ImageBackground.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* Keep dialog near bottom like an RPG */
+    .hud{
+      min-height: 100vh;
+      display: grid;
+      align-items: end;
+      padding: 18px;
+    }
+
+    .dialog{
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+    }
+
+    .dialogHeader{
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #headerTitle{
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    #headerApp{
+      font-size: 0.9rem;
+      color: rgba(238,242,255,0.75);
+    }
+
+    .dialogBody{
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .line{
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.45;
+      white-space: pre-wrap; /* supports \n in your JSON text */
+    }
+
+    .nodePic{
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      display: none;
+    }
+
+    .choices{
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    button.choice{
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      padding: 12px 12px;
+      border-radius: 14px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      transition: background 0.12s ease, transform 0.06s ease, border-color 0.12s ease;
+    }
+    button.choice:hover{
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.24);
+    }
+    button.choice:active{ transform: translateY(1px); }
+
+    .toast{
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--muted);
+      font-size: 0.9rem;
+      box-shadow: var(--shadow);
+      display: none;
+      backdrop-filter: blur(4px);
+      max-width: min(520px, calc(100% - 36px));
+    }
+
+    #contentArea{
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    
+    .listButtons{
+      display: grid;
+      gap: 10px;
+    }
+    
+    .grid{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;      
+    }
+    
+    .cardTile{
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.06s ease, background 0.12s ease;
+    }
+    .cardTile:hover{ background: rgba(255,255,255,0.12); }
+    .cardTile:active{ transform: translateY(1px); }
+    
+    .cardTile img{
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .cardTile .label{
+      padding: 8px 10px;
+      font-weight: 700;
+      color: rgba(238,242,255,0.92);
+      font-size: 0.95rem;
+      line-height: 1.25;
+    }
+    
+    .detailBox{
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.35);
+      border-radius: 14px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    
+    .detailBox .row{
+      color: rgba(238,242,255,0.88);
+    }
+    .detailBox .k{
+      color: rgba(238,242,255,0.65);
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="hud">
+    <section class="dialog" aria-label="NPC dialog">
+      <div class="dialogHeader">
+        <span id="headerTitle"></span>
+        <span id="headerApp"></span>
+      </div>
+
+      <div class="dialogBody">
+        <p class="line" id="dialogLine">Loading…</p>
+        <img id="nodePic" class="nodePic" alt="Dialog image" />
+        <div id="contentArea"></div>
+        <div class="choices" id="choices"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+let DIALOG = {};
+let currentNodeId = "start";
+
+// CSV data
+let RIBBONS = [];
+let VIEW_STACK = []; // for "back_view"
+let CURRENT_DETAIL = null;
+let CURRENT_LIST_RESTORE = null;
+let APP_CONFIG = {};
+
+// UI
+const elHeaderTitle = document.getElementById("headerTitle");
+const elHeaderApp   = document.getElementById("headerApp");
+const elLine    = document.getElementById("dialogLine");
+const elChoices = document.getElementById("choices");
+const elPic     = document.getElementById("nodePic");   // if you kept picture_url support
+const elContent = document.getElementById("contentArea");
+
+// Back Button Support
+const NAV_HISTORY = [];   // stack of { nodeId, restore }
+let SUPPRESS_HASH = false;
+
+async function loadAll(){
+  await Promise.all([
+    loadAppConfig(),
+    loadConversations(),
+    loadRibbonsCsv()
+  ]);
+  applyHeader();
+  render("start");
+}
+
+async function loadAppConfig(){
+  const res = await fetch("./Config/app_config.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`app_config.json HTTP ${res.status}`);
+  APP_CONFIG = await res.json();
+}
+
+async function loadConversations(){
+  const res = await fetch("./Config/Conversations.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Conversations.json HTTP ${res.status}`);
+  DIALOG = await res.json();
+  if (!DIALOG.start) throw new Error("Missing node: start");
+}
+
+async function loadRibbonsCsv(){
+  const res = await fetch("./Config/Ribbons.csv", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Ribbons.csv HTTP ${res.status}`);
+  const text = await res.text();
+
+  const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+  if (parsed.errors?.length) {
+    console.warn("CSV parse warnings:", parsed.errors);
+  }
+
+  // Keep original headers. We'll access via exact names.
+  RIBBONS = (parsed.data || [])
+    .map(r => cleanRow(r))
+    .filter(r => r.name); // ignore blank rows
+}
+
+// Trim whitespace everywhere
+function cleanRow(row){
+  const out = {};
+  for (const k of Object.keys(row)) {
+    out[k] = typeof row[k] === "string" ? row[k].trim() : row[k];
+  }
+  return out;
+}
+
+function render(nodeId){
+  const node = DIALOG[nodeId];
+  if (!node) {
+    elLine.textContent = `Missing node: "${nodeId}"`;
+    elChoices.innerHTML = "";
+    elContent.innerHTML = "";
+    return;
+  }
+
+  currentNodeId = nodeId;
+
+  elLine.textContent = node.text ?? "";
+
+  // Optional picture_url support (if you kept it)
+  if (elPic) {
+    if (node.picture_url) {
+      elPic.src = node.picture_url;
+      elPic.style.display = "block";
+    } else {
+      elPic.style.display = "none";
+    }
+  }
+
+  // Render static choices from JSON (Back, etc.)
+  elChoices.innerHTML = "";
+  const choices = Array.isArray(node.choices) ? node.choices : [];
+  choices.forEach((c, idx) => {
+    const btn = document.createElement("button");
+    const label = resolveLabel(c) || "(missing label)";
+    btn.className = "choice";
+    btn.type = "button";
+    btn.textContent = `${idx + 1}. ${label}`;
+    btn.addEventListener("click", () => handleChoice(c));
+    elChoices.appendChild(btn);
+  });
+
+  // Render dynamic view content
+  elContent.innerHTML = "";
+  if (node.view) renderView(node.view);
+}
+
+function handleChoice(c){
+  if (c.url) {
+    window.open(c.url, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  if (c.action === "back") {
+    goBack();
+    return;
+  }
+
+  if (c.action === "open_discussion") {
+    if (APP_CONFIG.discussion_board) {
+      window.open(APP_CONFIG.discussion_board, "_blank", "noopener,noreferrer");
+    }
+    return;
+  }
+  
+  if (c.action === "open_ribbon_form") {
+    if (APP_CONFIG.ribbon_form) {
+      window.open(APP_CONFIG.ribbon_form, "_blank", "noopener,noreferrer");
+    }
+    return;
+  }
+
+  // ✅ NEW: From ribbon detail → show grid for same dealer
+  if (c.action === "detail_dealer") {
+    if (!CURRENT_DETAIL) return;
+
+    const dealerName = (CURRENT_DETAIL.dealer || "").trim();
+    if (!dealerName) return;
+
+    // Push history so Back returns to detail
+    pushNav("ribbon_detail", () => {
+      CURRENT_DETAIL && render("ribbon_detail");
+    });
+
+    // Set restore so clicking a ribbon from this grid can return here
+    const restoreDealerGrid = () => {
+      elContent.innerHTML = "";
+      renderRibbonGrid(
+        RIBBONS.filter(r => (r.dealer || "").trim() === dealerName),
+        `Dealer: ${dealerName}`
+      );
+    };
+    CURRENT_LIST_RESTORE = restoreDealerGrid;
+
+    // Move to the dealer node (so header/text make sense), then show grid
+    render("ribbons_dealers");
+    restoreDealerGrid();
+    return;
+  }
+  
+  if (c.action === "share") {
+    shareApp();
+    return;
+  }
+
+  // ✅ NEW: From ribbon detail → show grid for same fandom
+  if (c.action === "detail_fandom") {
+    if (!CURRENT_DETAIL) return;
+
+    const fandomName = (CURRENT_DETAIL.fandom || "").trim();
+    if (!fandomName) return;
+
+    pushNav("ribbon_detail", () => {
+      CURRENT_DETAIL && render("ribbon_detail");
+    });
+
+    const restoreFandomGrid = () => {
+      elContent.innerHTML = "";
+      renderRibbonGrid(
+        RIBBONS.filter(r => (r.fandom || "").trim() === fandomName),
+        `Fandom: ${fandomName}`
+      );
+    };
+    CURRENT_LIST_RESTORE = restoreFandomGrid;
+
+    render("ribbons_fandom");
+    restoreFandomGrid();
+    return;
+  }
+
+  // Normal navigation
+  if (c.next) {
+    pushNav(currentNodeId, CURRENT_LIST_RESTORE || (() => {}));
+    render(c.next);
+    return;
+  }
+
+  console.warn("Choice misconfigured:", c);
+}
+
+function renderView(viewName){
+  // All list/detail rendering happens here
+  if (viewName === "dealers") return renderDealers();
+  if (viewName === "fandoms") return renderFandoms();
+  if (viewName === "all_ribbons") return renderAllRibbons();
+  if (viewName === "ribbon_detail") return renderRibbonDetail(CURRENT_DETAIL);
+}
+
+function distinctValues(field){
+  const set = new Set();
+  for (const r of RIBBONS) {
+    const v = (r[field] || "").trim();
+    if (v) set.add(v);
+  }
+  return [...set].sort((a,b) => a.localeCompare(b));
+}
+
+// ---- Views ----
+function renderDealers(){
+  const dealers = distinctValues("dealer");
+  const wrap = document.createElement("div");
+  wrap.className = "listButtons";
+
+  dealers.forEach(name => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.type = "button";
+    btn.textContent = name;
+
+    btn.addEventListener("click", () => {
+      // 1) Save where we came from: the dealer list view
+      //    (so browser back from "Dealer: X" returns to the dealer list)
+      pushNav("ribbons_dealers", () => {
+        elContent.innerHTML = "";
+        renderDealers();
+      });
+
+      // 2) Define how to restore THIS dealer's grid (so back from detail returns to the grid)
+      const restoreThisDealerGrid = () => {
+        elContent.innerHTML = "";
+        renderRibbonGrid(
+          RIBBONS.filter(r => (r.dealer || "").trim() === name),
+          `Dealer: ${name}`
+        );
+      };
+
+      // 3) Set current list restore so detail can go "back to previous list" properly
+      CURRENT_LIST_RESTORE = restoreThisDealerGrid;
+
+      // 4) Render the dealer's grid now
+      elContent.innerHTML = "";
+      restoreThisDealerGrid();
+    });
+
+    wrap.appendChild(btn);
+  });
+
+  elContent.appendChild(wrap);
+}
+
+function renderFandoms(){
+  const fandoms = distinctValues("fandom");
+  const wrap = document.createElement("div");
+  wrap.className = "listButtons";
+
+  fandoms.forEach(name => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.type = "button";
+    btn.textContent = name;
+
+    btn.addEventListener("click", () => {
+      // Save where we came from: fandom list
+      pushNav("ribbons_fandom", () => {
+        elContent.innerHTML = "";
+        renderFandoms();
+      });
+
+      // Restore function for THIS fandom grid
+      const restoreThisFandomGrid = () => {
+        elContent.innerHTML = "";
+        renderRibbonGrid(
+          RIBBONS.filter(r => (r.fandom || "").trim() === name),
+          `Fandom: ${name}`
+        );
+      };
+
+      CURRENT_LIST_RESTORE = restoreThisFandomGrid;
+
+      elContent.innerHTML = "";
+      restoreThisFandomGrid();
+    });
+
+    wrap.appendChild(btn);
+  });
+
+  elContent.appendChild(wrap);
+}
+
+function renderAllRibbons(){
+  renderRibbonGrid(RIBBONS, "All ribbons");
+}
+
+function renderRibbonGrid(rows, title){
+  elContent.innerHTML = "";
+
+  const heading = document.createElement("div");
+  heading.className = "detailBox";
+  heading.innerHTML = `<div class="row"><span class="k">${escapeHtml(title)}</span> (${rows.length})</div>`;
+  elContent.appendChild(heading);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  rows.forEach(r => {
+    const tile = document.createElement("div");
+    tile.className = "cardTile";
+
+    const imgName = r["file_name"]; // your exact column name
+    const imgPath = imgName ? `./Config/ImageRibbons/${encodeURIComponent(imgName)}` : "";
+
+    tile.innerHTML = `
+      <img src="${imgPath}" alt="${escapeHtml(r.name || "Ribbon")}" onerror="this.style.display='none';" />
+      <div class="label">${escapeHtml(r.name || "(unnamed)")}</div>
+    `;
+
+    tile.addEventListener("click", () => {
+      // Save the CURRENT GRID state (dealer / fandom / all),
+      // not the dealer list
+      pushNav(
+        currentNodeId,
+        CURRENT_LIST_RESTORE || (() => {})
+      );
+
+      CURRENT_DETAIL = r;
+      render("ribbon_detail");
+    });
+
+
+    grid.appendChild(tile);
+  });
+
+  elContent.appendChild(grid);
+}
+
+function renderRibbonDetail(r){
+  elContent.innerHTML = "";
+  if (!r) {
+    elContent.textContent = "No ribbon selected.";
+    return;
+  }
+
+  const imgName = r["file_name"];
+  const imgPath = imgName ? `./Config/ImageRibbons/${encodeURIComponent(imgName)}` : "";
+
+  const box = document.createElement("div");
+  box.className = "detailBox";
+  box.innerHTML = `
+    <img src="${imgPath}" alt="${escapeHtml(r.name || "Ribbon")}" style="width:100%;max-height:320px;object-fit:contain;border-radius:14px;border:1px solid rgba(255,255,255,0.14);" />
+    <div class="row"><span class="k">Name:</span> ${escapeHtml(r.name || "")}</div>
+    <div class="row"><span class="k">Dealer:</span> ${escapeHtml(r.dealer || "")}</div>
+    <div class="row"><span class="k">Dealer cosplay:</span> ${escapeHtml(r["dealer-cosplay"] || "")}</div>
+    <div class="row"><span class="k">Fandom:</span> ${escapeHtml(r.fandom || "")}</div>
+    <div class="row"><span class="k">Type:</span> ${escapeHtml(r.type || "")}</div>
+    <div class="row"><span class="k">Days:</span> ${escapeHtml(r.days || "")}</div>
+    <div class="row"><span class="k">How to earn:</span><br>${escapeHtml(r["how-to-earn"] || "")}</div>
+  `;
+  elContent.appendChild(box);
+}
+
+function pushViewState(nodeId, restoreFn){
+  VIEW_STACK.push({ nodeId, restore: restoreFn });
+}
+
+function resolveLabel(choice){
+  if (choice.label_template && CURRENT_DETAIL) {
+    return choice.label_template
+      .replace(/\{\{dealer\}\}/g, CURRENT_DETAIL.dealer || "Dealer")
+      .replace(/\{\{fandom\}\}/g, CURRENT_DETAIL.fandom || "Fandom");
+  }
+  return choice.label;
+}
+
+function applyHeader(){
+  elHeaderTitle.textContent =
+    APP_CONFIG.convention_name || "Convention";
+
+  elHeaderApp.textContent =
+    APP_CONFIG.app_name || "App";
+
+  document.title = `${APP_CONFIG.convention_name} ${APP_CONFIG.app_name}`;
+}
+
+// Keyboard: 1–9 selects visible buttons (choices first, then view buttons)
+window.addEventListener("keydown", (e) => {
+  const n = Number(e.key);
+  if (!Number.isInteger(n) || n < 1 || n > 9) return;
+
+  const buttons = [
+    ...elChoices.querySelectorAll("button.choice"),
+    ...elContent.querySelectorAll("button.choice")
+  ];
+  const btn = buttons[n - 1];
+  if (btn) btn.click();
+});
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, (m) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function pushNav(nodeId, restoreFn){
+  NAV_HISTORY.push({ nodeId, restore: restoreFn });
+
+  // set hash so browser back becomes "conversation back"
+  SUPPRESS_HASH = true;
+  location.hash = `#n=${NAV_HISTORY.length}`;
+  setTimeout(() => (SUPPRESS_HASH = false), 0);
+}
+
+function goBack(){
+  const prev = NAV_HISTORY.pop();
+  if (!prev) return;
+
+  render(prev.nodeId);
+  if (typeof prev.restore === "function") prev.restore();
+
+  SUPPRESS_HASH = true;
+  location.hash = `#n=${NAV_HISTORY.length}`;
+  setTimeout(() => (SUPPRESS_HASH = false), 0);
+}
+
+function shareApp(){
+  const shareData = {
+    title: `${APP_CONFIG.convention_name} ${APP_CONFIG.app_name}`,
+    text: `Check out the Ribbon Album at ${APP_CONFIG.convention_name}! 🎀`,
+    url: APP_CONFIG.app_url || window.location.href
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    fallbackShare(shareData);
+  }
+}
+
+loadAll().catch(err => {
+  elLine.textContent = "Could not load config or CSV. Check paths/case and commits.";
+  console.error(err);
+});
+
+window.addEventListener("hashchange", () => {
+  if (SUPPRESS_HASH) return;
+  goBack();
+});
+
+</script>
+
+</body>
+</html>
