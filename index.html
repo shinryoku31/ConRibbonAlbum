@@ -227,6 +227,7 @@ let RIBBONS = [];
 let VIEW_STACK = []; // for "back_view"
 let CURRENT_DETAIL = null;
 let CURRENT_LIST_RESTORE = null;
+let MEETUPS = [];
 let APP_CONFIG = {};
 
 // UI
@@ -245,7 +246,8 @@ async function loadAll(){
   await Promise.all([
     loadAppConfig(),
     loadConversations(),
-    loadRibbonsCsv()
+    loadRibbonsCsv(),
+    loadMeetupsCsv()
   ]);
   applyHeader();
   render("start");
@@ -278,6 +280,24 @@ async function loadRibbonsCsv(){
   RIBBONS = (parsed.data || [])
     .map(r => cleanRow(r))
     .filter(r => r.name); // ignore blank rows
+}
+
+async function loadMeetupsCsv(){
+  const res = await fetch("./Config/Meetups.csv", { cache: "no-store" });
+  if (!res.ok) {
+    console.warn(`Meetups.csv not found (HTTP ${res.status}) - events list will be empty.`);
+    MEETUPS = [];
+    return;
+  }
+
+  const text = await res.text();
+  const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+
+  if (parsed.errors?.length) console.warn("Meetups CSV parse warnings:", parsed.errors);
+
+  MEETUPS = (parsed.data || [])
+    .map(cleanRow)
+    .filter(m => m.title); // ignore blank rows
 }
 
 // Trim whitespace everywhere
@@ -429,6 +449,7 @@ function renderView(viewName){
   if (viewName === "fandoms") return renderFandoms();
   if (viewName === "all_ribbons") return renderAllRibbons();
   if (viewName === "ribbon_detail") return renderRibbonDetail(CURRENT_DETAIL);
+  if (viewName === "meetups") return renderMeetups();
 }
 
 function distinctValues(field){
@@ -591,6 +612,46 @@ function renderRibbonDetail(r){
     <div class="row"><span class="k">How to earn:</span><br>${escapeHtml(r["how-to-earn"] || "")}</div>
   `;
   elContent.appendChild(box);
+}
+
+function renderMeetups(){
+  elContent.innerHTML = "";
+
+  if (!MEETUPS.length) {
+    const box = document.createElement("div");
+    box.className = "detailBox";
+    box.innerHTML = `<div class="row">No meetups listed yet.</div>`;
+    elContent.appendChild(box);
+    return;
+  }
+
+  const wrap = document.createElement("div");
+  wrap.className = "listButtons";
+
+  MEETUPS.forEach(m => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.type = "button";
+    btn.textContent = `📅 ${m.day} • ${m.time} — ${m.title} (${m.location})`;
+
+    // Optional: click shows a simple detail popup/box (same page)
+    btn.addEventListener("click", () => {
+      elContent.innerHTML = "";
+      const box = document.createElement("div");
+      box.className = "detailBox";
+      box.innerHTML = `
+        <div class="row"><span class="k">Title:</span> ${escapeHtml(m.title || "")}</div>
+        <div class="row"><span class="k">Day:</span> ${escapeHtml(m.day || "")}</div>
+        <div class="row"><span class="k">Time:</span> ${escapeHtml(m.time || "")}</div>
+        <div class="row"><span class="k">Location:</span> ${escapeHtml(m.location || "")}</div>
+      `;
+      elContent.appendChild(box);
+    });
+
+    wrap.appendChild(btn);
+  });
+
+  elContent.appendChild(wrap);
 }
 
 function pushViewState(nodeId, restoreFn){

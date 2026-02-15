@@ -201,8 +201,8 @@
 
   "events": {
     "text": "Of course! There are Ribbon Game Meet-Ups. Below is a list of times and places. You can also hold an unofficial ribbon meetup in Discord using #ribbon-collectors.",
+    "view": "meetups",
     "choices": [
-      { "label": "<TBA - Placeholder> Saturday Afternoon", "next": "events_session1" },
       { "label": "Show me the Discord Server", "next": "about_discord" },
       { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
     ]
