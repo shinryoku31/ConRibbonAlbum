@@ -630,9 +630,15 @@ window.addEventListener("keydown", (e) => {
 });
 
 function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
+  return String(str)
+    .replace(/[&<>"']/g, (m) => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      "\"":"&quot;",
+      "'":"&#039;"
+    }[m]))
+    .replace(/\r?\n/g, "<br>");
 }
 
 function pushNav(nodeId, restoreFn){
