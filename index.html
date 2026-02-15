@@ -340,7 +340,7 @@ function render(nodeId){
     const label = resolveLabel(c) || "(missing label)";
     btn.className = "choice";
     btn.type = "button";
-    btn.textContent = `${idx + 1}. ${label}`;
+    btn.textContent = `${label}`;
     btn.addEventListener("click", () => handleChoice(c));
     elChoices.appendChild(btn);
   });
