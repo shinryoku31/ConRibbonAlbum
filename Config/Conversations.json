@@ -184,6 +184,10 @@
     "text": "Ribbon details:",
     "view": "ribbon_detail",
     "choices": [
+      { 
+        "label_template": "Status: {{status}} (tap to change)", 
+        "action": "cycle_flag" 
+      },
       {
         "label_template": "👤 Ribbons from {{dealer}}",
         "action": "detail_dealer"

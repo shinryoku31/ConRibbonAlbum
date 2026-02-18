@@ -199,6 +199,16 @@
       margin-right: 8px;
     }
 
+    .cardTile{ position: relative; }
+
+    .badge{
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 1.15rem;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.6));
+      pointer-events: none;
+    }
   </style>
 </head>
 
@@ -244,6 +254,9 @@ const elContent = document.getElementById("contentArea");
 // Back Button Support
 const NAV_HISTORY = [];   // stack of { nodeId, restore }
 let SUPPRESS_HASH = false;
+
+// Flag Storage
+const FLAG_KEY = "conribbon_flags_v1";
 
 async function loadAll(){
   await Promise.all([
@@ -443,6 +456,19 @@ function handleChoice(c){
     return;
   }
 
+  if (c.action === "cycle_flag") {
+    if (!CURRENT_DETAIL) return;
+  
+    const fileName = CURRENT_DETAIL["file_name"];
+    if (!fileName) return;
+  
+    cycleFlag(fileName);
+  
+    // Re-render ribbon_detail so the status label updates immediately
+    render("ribbon_detail");
+    return;
+  }
+
   console.warn("Choice misconfigured:", c);
 }
 
@@ -567,8 +593,11 @@ function renderRibbonGrid(rows, title){
 
     const imgName = r["file_name"]; // your exact column name
     const imgPath = imgName ? `./Config/ImageRibbons/${encodeURIComponent(imgName)}` : "";
+    const state = getFlag(imgName);
+    const badge = flagBadge(state);
 
     tile.innerHTML = `
+      <div class="badge">${badge}</div>
       <img src="${imgPath}" alt="${escapeHtml(r.name || "Ribbon")}" onerror="this.style.display='none';" />
       <div class="label">${escapeHtml(r.name || "(unnamed)")}</div>
     `;
@@ -606,6 +635,7 @@ function renderRibbonDetail(r){
   box.className = "detailBox";
   box.innerHTML = `
     <img src="${imgPath}" alt="${escapeHtml(r.name || "Ribbon")}" style="width:100%;max-height:320px;object-fit:contain;border-radius:14px;border:1px solid rgba(255,255,255,0.14);" />
+    <div class="row"><span class="k">Status:</span> ${escapeHtml(flagLabel(getFlag(imgName)))}</div>
     <div class="row"><span class="k">Name:</span> ${escapeHtml(r.name || "")}</div>
     <div class="row"><span class="k">Dealer:</span> ${escapeHtml(r.dealer || "")}</div>
     <div class="row"><span class="k">Dealer cosplay:</span> ${escapeHtml(r["dealer-cosplay"] || "")}</div>
@@ -662,10 +692,18 @@ function pushViewState(nodeId, restoreFn){
 }
 
 function resolveLabel(choice){
-  if (choice.label_template && CURRENT_DETAIL) {
+  if (choice.label_template) {
+    const dealer = (CURRENT_DETAIL?.dealer || "Dealer");
+    const fandom = (CURRENT_DETAIL?.fandom || "Fandom");
+
+    const fileName = (CURRENT_DETAIL?.["file_name"] || "");
+    const state = fileName ? getFlag(fileName) : "none";
+    const status = flagLabel(state); // "Want 🟡" / "Got ✅" / "Not tracking"
+
     return choice.label_template
-      .replace(/\{\{dealer\}\}/g, CURRENT_DETAIL.dealer || "Dealer")
-      .replace(/\{\{fandom\}\}/g, CURRENT_DETAIL.fandom || "Fandom");
+      .replace(/\{\{dealer\}\}/g, dealer)
+      .replace(/\{\{fandom\}\}/g, fandom)
+      .replace(/\{\{status\}\}/g, status);
   }
   return choice.label;
 }
@@ -749,6 +787,52 @@ window.addEventListener("hashchange", () => {
   if (SUPPRESS_HASH) return;
   goBack();
 });
+
+function loadFlags(){
+  try {
+    return JSON.parse(localStorage.getItem(FLAGS_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveFlags(flags){
+  localStorage.setItem(FLAGS_KEY, JSON.stringify(flags));
+}
+
+function getFlag(fileName){
+  const flags = loadFlags();
+  return flags[fileName] || "none"; // "none" | "want" | "got"
+}
+
+function setFlag(fileName, state){
+  const flags = loadFlags();
+  if (!fileName) return;
+
+  if (state === "none") delete flags[fileName];
+  else flags[fileName] = state;
+
+  saveFlags(flags);
+}
+
+function cycleFlag(fileName){
+  const cur = getFlag(fileName);
+  const next = cur === "none" ? "want" : (cur === "want" ? "got" : "none");
+  setFlag(fileName, next);
+  return next;
+}
+
+function flagBadge(state){
+  if (state === "want") return "🟡";
+  if (state === "got") return "✅";
+  return "";
+}
+
+function flagLabel(state){
+  if (state === "want") return "Want 🟡";
+  if (state === "got") return "Got ✅";
+  return "Not tracking";
+}
 
 </script>
 
