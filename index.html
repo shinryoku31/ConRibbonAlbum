@@ -383,6 +383,13 @@ function handleChoice(c){
     }
     return;
   }
+
+  if (c.action === "open_github") {
+    if (APP_CONFIG.app_github) {
+      window.open(APP_CONFIG.app_github, "_blank", "noopener,noreferrer");
+    }
+    return;
+  }  
   
   if (c.action === "open_ribbon_form") {
     if (APP_CONFIG.ribbon_form) {
