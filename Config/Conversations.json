@@ -141,7 +141,7 @@
     "choices": [
       { "label": "equinoxdoodles at Youmacon Virtual Collector's Album", "url": "https://docs.google.com/spreadsheets/d/1aPjje-rhUCYEZQv5YhesGeubb22otoTiTXURPArlWpI/edit#gid=1870883671" },
       { "label": "AMKE 2025 Virtual Collector's Album", "url": "https://docs.google.com/spreadsheets/d/1Xe5TOfK0Xw7wJHjRLC-rFubmjfSrJ8tuRCPUfknB-n0/edit?gid=1870883671#gid=1870883671" },
-      { "label": "conRibbons NPC Conversation (this website)", "url": "https://github.com/shinryoku31/ConRibbons" },
+      { "label": "shinryoku31's NPC Ribbon Album (this website)", "url": "https://github.com/shinryoku31/ConRibbonAlbum" },
       { "label": "🔙 Back", "next": "about" }
     ]
   },
