@@ -477,6 +477,7 @@ function renderView(viewName){
   if (viewName === "dealers") return renderDealers();
   if (viewName === "fandoms") return renderFandoms();
   if (viewName === "all_ribbons") return renderAllRibbons();
+  if (viewName === "my_ribbons") return renderMyRibbons();
   if (viewName === "ribbon_detail") return renderRibbonDetail(CURRENT_DETAIL);
   if (viewName === "meetups") return renderMeetups();
 }
@@ -620,6 +621,32 @@ function renderRibbonGrid(rows, title){
 
   elContent.appendChild(grid);
 }
+
+function renderMyRibbons(){
+  const flags = loadFlags(); // { "RB-0001.png": "want", ... }
+  const keys = Object.keys(flags);
+
+  if (!keys.length) {
+    elContent.innerHTML = `<div class="detailBox"><div class="row">You haven’t marked any ribbons yet.</div></div>`;
+    return;
+  }
+
+  const rows = RIBBONS.filter(r => {
+    const fn = r["file_name"];
+    return fn && flags[fn] && flags[fn] !== "none";
+  });
+
+  // Optional: sort Got first, then Want
+  rows.sort((a,b) => {
+    const sa = flags[a["file_name"]] || "none";
+    const sb = flags[b["file_name"]] || "none";
+    const rank = s => (s === "got" ? 0 : (s === "want" ? 1 : 2));
+    return rank(sa) - rank(sb);
+  });
+
+  renderRibbonGrid(rows, "My tracked ribbons");
+}
+
 
 function renderRibbonDetail(r){
   elContent.innerHTML = "";
