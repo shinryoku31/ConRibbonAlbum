@@ -151,6 +151,7 @@
     "choices": [
       { "label": "👥 Show me a dealers list", "next": "ribbons_dealers" },
       { "label": "🏯 Show me a fandom list", "next": "ribbons_fandom" },
+      { "label": "✅ Show my tracked ribbons", "next": "ribbons_mine" },
       { "label": "📃 Show me the Ribbons", "next": "ribbons_all" },
       { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
     ]
@@ -177,6 +178,15 @@
     "view": "all_ribbons",
     "choices": [
       { "label": "🔙 Back", "next": "ribbons" }
+    ]
+  },
+
+  "ribbons_mine": {
+    "text": "Here are the ribbons you are tracking:",
+    "view": "my_ribbons",
+    "choices": [
+      { "label": "🏠 Ribbon Menu", "next": "ribbons" },
+      { "label": "⬅️ Back", "action": "back" }
     ]
   },
 
