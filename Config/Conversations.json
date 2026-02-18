@@ -22,12 +22,13 @@
   "about": {
     "text": "The Ribbon Game is a scavenger hunt focused around building connections between congoers. There are many ways to obtain a ribbon—you just have to track down dealers who have them.",
     "choices": [
-      { "label": "What are the main ways you can earn ribbons?", "next": "about_types" },
-      { "label": "How do I find ribbons?", "next": "about_find" },
+      { "label": "🔘 What are the main ways you can earn ribbons?", "next": "about_types" },
+      { "label": "🔎 How do I find ribbons?", "next": "about_find" },
       { "label": "📝 What if I want to give out ribbons?", "next": "about_suppliers" },
-      { "label": "Do I need my own ribbons to play?", "next": "about_need" },
-      { "label": "Where can I join the discussion boards?", "next": "about_discord" },
-      { "label": "Who has contributed to this collector album?", "next": "about_credits" },
+      { "label": "🫴 Do I need my own ribbons to play?", "next": "about_need" },
+      { "label": "💬 Where can I join the discussion boards?", "next": "about_discord" },
+      { "label": "ℹ️ Show me the User Guide on Github", "action": "open_github" },
+      { "label": "👨‍💻 Who has contributed to this collector album?", "next": "about_credits" },
       { "label": "🏠 Thanks, let's talk ribbons!", "next": "start_again" }
     ]
   },
@@ -43,11 +44,11 @@
   "about_types": {
     "text": "There are usually 5 main ways players can earn ribbons:",
     "choices": [
-      { "label": "Q&A", "next": "about_type_qa" },
-      { "label": "Achievement", "next": "about_type_achieve" },
-      { "label": "Connection", "next": "about_type_connect" },
-      { "label": "Action", "next": "about_type_action" },
-      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "❓ Q&A", "next": "about_type_qa" },
+      { "label": "🎗️ Achievement", "next": "about_type_achieve" },
+      { "label": "🤝 Connection", "next": "about_type_connect" },
+      { "label": "🎬 Action", "next": "about_type_action" },
+      { "label": "⭐ Exclusive", "next": "about_type_exclusive" },
       { "label": "🔙 Back", "next": "about" },
       { "label": "❓ More About Ribbons", "next": "about"}
     ]
@@ -56,10 +57,10 @@
   "about_type_qa": {
     "text": "To get a Q&A ribbon, you must answer a question or quiz.",
     "choices": [
-      { "label": "Achievement", "next": "about_type_achieve" },
-      { "label": "Connection", "next": "about_type_connect" },
-      { "label": "Action", "next": "about_type_action" },
-      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "🎗️ Achievement", "next": "about_type_achieve" },
+      { "label": "🤝 Connection", "next": "about_type_connect" },
+      { "label": "🎬 Action", "next": "about_type_action" },
+      { "label": "⭐ Exclusive", "next": "about_type_exclusive" },
       { "label": "🔙 Back", "next": "about_types" },
       { "label": "❓ More About Ribbons", "next": "about"}
     ]
@@ -68,10 +69,10 @@
   "about_type_achieve": {
     "text": "To get an Achievement ribbon, you must complete a special task or quest.",
     "choices": [
-      { "label": "Q&A", "next": "about_type_qa" },
-      { "label": "Connection", "next": "about_type_connect" },
-      { "label": "Action", "next": "about_type_action" },
-      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "❓ Q&A", "next": "about_type_qa" },
+      { "label": "🤝 Connection", "next": "about_type_connect" },
+      { "label": "🎬 Action", "next": "about_type_action" },
+      { "label": "⭐ Exclusive", "next": "about_type_exclusive" },
       { "label": "🔙 Back", "next": "about_types" },
       { "label": "❓ More About Ribbons", "next": "about"}
     ]
@@ -80,10 +81,10 @@
   "about_type_connect": {
     "text": "To get a Connection ribbon, you must meet people and strike up a conversation.",
     "choices": [
-      { "label": "Q&A", "next": "about_type_qa" },
-      { "label": "Achievement", "next": "about_type_achieve" },
-      { "label": "Action", "next": "about_type_action" },
-      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "❓ Q&A", "next": "about_type_qa" },
+      { "label": "🎗️ Achievement", "next": "about_type_achieve" },
+      { "label": "🎬 Action", "next": "about_type_action" },
+      { "label": "⭐ Exclusive", "next": "about_type_exclusive" },
       { "label": "🔙 Back", "next": "about_types" },
       { "label": "❓ More About Ribbons", "next": "about"}
     ]
@@ -92,10 +93,10 @@
   "about_type_action": {
     "text": "To get an Action ribbon, you need to play a game or perform an activity.",
     "choices": [
-      { "label": "Q&A", "next": "about_type_qa" },
-      { "label": "Achievement", "next": "about_type_achieve" },
-      { "label": "Connection", "next": "about_type_connect" },
-      { "label": "Exclusive", "next": "about_type_exclusive" },
+      { "label": "❓ Q&A", "next": "about_type_qa" },
+      { "label": "🎗️ Achievement", "next": "about_type_achieve" },
+      { "label": "🤝 Connection", "next": "about_type_connect" },
+      { "label": "⭐ Exclusive", "next": "about_type_exclusive" },
       { "label": "🔙 Back", "next": "about_types" },
       { "label": "❓ More About Ribbons", "next": "about"}
     ]
@@ -104,10 +105,10 @@
   "about_type_exclusive": {
     "text": "To get an Exclusive ribbon, you must be at a certain time and place, wear a specific cosplay, or something similar.",
     "choices": [
-      { "label": "Q&A", "next": "about_type_qa" },
-      { "label": "Achievement", "next": "about_type_achieve" },
-      { "label": "Connection", "next": "about_type_connect" },
-      { "label": "Action", "next": "about_type_action" },
+      { "label": "❓ Q&A", "next": "about_type_qa" },
+      { "label": "🎗️ Achievement", "next": "about_type_achieve" },
+      { "label": "🤝 Connection", "next": "about_type_connect" },
+      { "label": "🎬 Action", "next": "about_type_action" },
       { "label": "🔙 Back", "next": "about_types" },
       { "label": "❓ More About Ribbons", "next": "about"}
     ]
