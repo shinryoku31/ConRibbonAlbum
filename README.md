@@ -1,13 +1,23 @@
-# ConRibbons 🎀 (NPC Ribbon Album)
+# ConRibbonsAlbums 🎀 (NPC Ribbon Album)
 
 A phone-first, single-page web app that feels like an NPC dialog menu.  
-It lets congoers browse ribbons by **Dealer**, **Fandom**, or **All**, tap a ribbon image to view details, and (optionally) share the app using the phone’s native share sheet.
+It lets congoers browse ribbons by **Dealer**, **Fandom**, or **All**, tap a ribbon image to view details.
 
 This project is designed to be easy to maintain with minimal coding:
 
-- Update conversation text in `Config/conversations.json`
 - Update ribbon data in `Config/Ribbons.csv`
 - Drop ribbon images into `Config/ImageRibbons/`
+- Update meetup data in `Config/Meetups.csv`
+
+This project can be customized for a convention by updating
+
+- Update Information in `Config/app_config.json`
+- Update Background Image at `Config/imageBackground.png`
+- Update QR Code Image at `Config/imageQRcode.png`
+
+**Advanced** Update NPC's Conversation's Path
+
+- Update the `Config/Conversations.json`
 
 ---
 
