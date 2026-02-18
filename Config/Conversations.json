@@ -206,6 +206,10 @@
         "label_template": "🏯 Ribbons of {{fandom}} fandom",
         "action": "detail_fandom"
       },
+      { 
+        "label": "🔙 Back", 
+        "next": "about" 
+      },
       {
         "label": "📃 Ribbon Menu",
         "next": "ribbons"
